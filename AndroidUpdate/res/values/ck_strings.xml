@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="ck_updateing">正在下载更新</string>
+   <string name="ck_update">更新</string>
+<string name="ck_updated">下载更新</string>
+</resources>
