@@ -1,17 +1,17 @@
-#升级SDK（UpgradeSDK）
-######简介
+# 升级SDK（UpgradeSDK）
+###### 简介
 > 将系统常用的升级功能独立抽取出来作为一个SDK，此SDK提供强制更新和普通后台更新两种；
-######JCenter地址
+###### JCenter地址
      compile 'com.yqshi.sdk.upgrade:AndroidUpdate:1.0.1'
 
-######权限要求
+###### 权限要求
      <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
-######UpgradeSDK
+###### UpgradeSDK
       /**
        *单例模式
        */
@@ -34,7 +34,7 @@
         UpgradeController.getInstance().updateApp(context, upgradeMessage,
                 appName);
     }
-######代码调用
+###### 代码调用
     /**
      * 模拟自己后台请求
      *
@@ -81,7 +81,7 @@
         Toast.makeText(this, "检查更新失败", Toast.LENGTH_SHORT).show();
     }
 
-###github地址
+### github地址
 [https://github.com/yqshi/Upgrade](https://github.com/yqshi/Upgrade)
-###博客地址
+### 博客地址
 [http://blog.csdn.net/s939432817/article/details/52252483](http://blog.csdn.net/s939432817/article/details/52252483)
