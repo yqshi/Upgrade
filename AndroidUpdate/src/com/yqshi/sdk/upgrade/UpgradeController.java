@@ -1,13 +1,16 @@
 package com.yqshi.sdk.upgrade;
 
 import android.annotation.SuppressLint;
+import android.app.ActivityManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.content.FileProvider;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -16,6 +19,7 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.List;
 
 class UpgradeController {
     private static UpgradeController upgradeController;
@@ -120,6 +124,7 @@ class UpgradeController {
                         currentProcress = 0;
                         installApk(context, file);
                     } catch (Exception e) {
+                        e.printStackTrace();
                         try {
                             throw new FileNotFoundException("请检查是否具有读写文件的权限");
                         } catch (FileNotFoundException e1) {
@@ -266,9 +271,16 @@ class UpgradeController {
         intent.setAction(Intent.ACTION_VIEW);
         // 增加TAG
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-        intent.setDataAndType(Uri.fromFile(file),
-                "application/vnd.android.package-archive");
+         //7.0以上走不同的方法
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            Uri apkUri = FileProvider.getUriForFile(context,
+                    context.getApplicationContext().getPackageName()+".fileprovider", file);
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            intent.setDataAndType(apkUri, "application/vnd.android.package-archive");
+        } else {
+            intent.setDataAndType(Uri.fromFile(file), "application/vnd.android.package-archive");
+        }
         context.startActivity(intent);
     }
+
 }
