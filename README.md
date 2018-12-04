@@ -2,7 +2,7 @@
 ###### 简介
 > 将系统常用的升级功能独立抽取出来作为一个SDK，此SDK提供强制更新和普通后台更新两种；
 ###### JCenter地址
-     compile 'com.yqshi.sdk.upgrade:AndroidUpdate:1.0.1'
+     compile 'com.yqshi.sdk.upgrade:AndroidUpdate:1.0.3'
 
 ###### 权限要求
      <uses-permission android:name="android.permission.INTERNET" />
@@ -80,6 +80,42 @@
     public void ckFailed() {
         Toast.makeText(this, "检查更新失败", Toast.LENGTH_SHORT).show();
     }
+### Android7.0优化
+鉴于7.0之后对系统的隐私地址做了限制（会产生`android.os.FileUriExposedException`），不能再通过原先的方式获取到相册，或者是自动跳转到安装界面，所以通过系统提供的`fileprovider`来完成。主要代码如下：
+
+ 		//7.0以上走不同的方法
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            Uri apkUri = FileProvider.getUriForFile(context,
+                    context.getApplicationContext().getPackageName()+".fileprovider", file);
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            intent.setDataAndType(apkUri, "application/vnd.android.package-archive");
+        } else {
+            intent.setDataAndType(Uri.fromFile(file), "application/vnd.android.package-archive");
+        }
+同时要注意的是在使用此SDK的应用当中添加provider和xml
+在AndroidManifest当中添加 
+
+ 	<!--设置指定的provider来存放apk的位置，这是使用7.0系统以上的手机的优化-->
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.yqshi.upgrade.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />//指定xml文件对应的file_paths文件
+        </provider>
+在`res`目录下添加`xml`文件夹，在`xml`文件夹下添加`file_paths`文件
+	
+	<?xml version="1.0" encoding="utf-8"?>
+	<paths xmlns:tools="http://schemas.android.com/tools"
+	    tools:ignore="ResourceName">
+	    <root-path
+	        name="root-path"
+	        path="." />
+	</paths>
+
+
 
 ### github地址
 [https://github.com/yqshi/Upgrade](https://github.com/yqshi/Upgrade)
