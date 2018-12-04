@@ -46,18 +46,18 @@ class UpgradeNotificationHelper {
         nMgr = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
         if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.O){
-            //åˆ›å»º é€šçŸ¥é€šé“  channelidå’Œchannelnameæ˜¯å¿…é¡»çš„ï¼ˆè‡ªå·±å‘½åå°±å¥½ï¼‰
+            //´´½¨ Í¨ÖªÍ¨µÀ  channelidºÍchannelnameÊÇ±ØĞëµÄ£¨×Ô¼ºÃüÃû¾ÍºÃ£©
             NotificationChannel channel = new NotificationChannel("yqshi_upgrade",
                     "yqshi_upgrade_channel", NotificationManager.IMPORTANCE_DEFAULT);
-            channel.enableLights(true);//æ˜¯å¦åœ¨æ¡Œé¢iconå³ä¸Šè§’å±•ç¤ºå°çº¢ç‚¹
-            channel.setLightColor(Color.RED);//å°çº¢ç‚¹é¢œè‰²
-            channel.setShowBadge(true); //æ˜¯å¦åœ¨ä¹…æŒ‰æ¡Œé¢å›¾æ ‡æ—¶æ˜¾ç¤ºæ­¤æ¸ é“çš„é€šçŸ¥
+            channel.enableLights(true);//ÊÇ·ñÔÚ×ÀÃæiconÓÒÉÏ½ÇÕ¹Ê¾Ğ¡ºìµã
+            channel.setLightColor(Color.RED);//Ğ¡ºìµãÑÕÉ«
+            channel.setShowBadge(true); //ÊÇ·ñÔÚ¾Ã°´×ÀÃæÍ¼±êÊ±ÏÔÊ¾´ËÇşµÀµÄÍ¨Öª
             nMgr.createNotificationChannel(channel);
 
             int notificationId = 0x1234;
             Notification.Builder builder = new Notification.Builder(context,"yqshi_upgrade");
 
-            //è®¾ç½®é€šçŸ¥æ˜¾ç¤ºå›¾æ ‡ã€æ–‡å­—ç­‰
+            //ÉèÖÃÍ¨ÖªÏÔÊ¾Í¼±ê¡¢ÎÄ×ÖµÈ
             builder.setSmallIcon(ResourceUtil.getMipmapId(context, "ic_launcher"))
                     .setContentText(context.getString(R.string.ck_updated))
                     .setAutoCancel(true);
@@ -126,7 +126,7 @@ class UpgradeNotificationHelper {
                 nMgr.notify(NOTIFY_ID, notification);
         } else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                //å…³é—­é€šçŸ¥é€šé“
+                //¹Ø±ÕÍ¨ÖªÍ¨µÀ
                 nMgr.deleteNotificationChannel("yqshi_upgrade");
             }else {
                 nMgr.cancel(NOTIFY_ID);

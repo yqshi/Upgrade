@@ -59,7 +59,7 @@ class UpgradeController {
      */
     protected void updateApp(Context context, UpgradeMessage upgradeMessage,
                              String appName) {
-        // æ ¹æ®forceæ¥åˆ¤æ–­æ˜¯å¦æ˜¯å¼ºåˆ¶ä¸‹è½½
+        // ¸ù¾İforceÀ´ÅĞ¶ÏÊÇ·ñÊÇÇ¿ÖÆÏÂÔØ
         if (UpgradeMessage.FORCE.equals(upgradeMessage.getForce())) {
             downLoadApk(context, upgradeMessage.getDownloadUrl());
         } else {
@@ -75,12 +75,12 @@ class UpgradeController {
      */
     protected void downLoadApk(final Context context,
                                final String downLoadAPPurl) {
-        final ProgressDialog pd; // è¿›åº¦æ¡å¯¹è¯æ¡†
+        final ProgressDialog pd; // ½ø¶ÈÌõ¶Ô»°¿ò
         pd = new ProgressDialog(context);
         pd.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         pd.setMessage(context.getString(R.string.ck_updateing));
         pd.setCancelable(false);
-        // å½“ä¸‹è½½å®‰è£…æ—¶ï¼Œè§¦ç¢°å…¶ä»–åœ°æ–¹ä¸ä¼šæ¶ˆå¤±ä¸‹è½½æ¡
+        // µ±ÏÂÔØ°²×°Ê±£¬´¥ÅöÆäËûµØ·½²»»áÏûÊ§ÏÂÔØÌõ
         pd.setCanceledOnTouchOutside(false);
         //pd.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
         pd.show();
@@ -112,7 +112,7 @@ class UpgradeController {
         upgradeNotificationHelper.showNotification(true);
 
         try {
-            // ä¸‹è¼‰çš„Thread
+            // ÏÂİdµÄThread
             new Thread() {
                 @Override
                 public void run() {
@@ -126,7 +126,7 @@ class UpgradeController {
                     } catch (Exception e) {
                         e.printStackTrace();
                         try {
-                            throw new FileNotFoundException("è¯·æ£€æŸ¥æ˜¯å¦å…·æœ‰è¯»å†™æ–‡ä»¶çš„æƒé™");
+                            throw new FileNotFoundException("Çë¼ì²éÊÇ·ñ¾ßÓĞ¶ÁĞ´ÎÄ¼şµÄÈ¨ÏŞ");
                         } catch (FileNotFoundException e1) {
                             e1.printStackTrace();
                         }
@@ -138,7 +138,7 @@ class UpgradeController {
             e.printStackTrace();
         }
 
-        // ä¸‹è½½çš„Handel
+        // ÏÂÔØµÄHandel
         updateHandler = new Handler() {
 
             @Override
@@ -180,7 +180,7 @@ class UpgradeController {
     @SuppressLint("NewApi")
     private File getFileFromServer(String path, ProgressDialog pd)
             throws Exception {
-        // å¦‚æœç›¸ç­‰çš„è¯è¡¨ç¤ºå½“å‰çš„sdcardæŒ‚è½½åœ¨æ‰‹æœºä¸Šå¹¶ä¸”æ˜¯å¯ç”¨çš„
+        // Èç¹ûÏàµÈµÄ»°±íÊ¾µ±Ç°µÄsdcard¹ÒÔØÔÚÊÖ»úÉÏ²¢ÇÒÊÇ¿ÉÓÃµÄ
         if (Environment.getExternalStorageState().equals(
                 Environment.MEDIA_MOUNTED)) {
             URL url = new URL(path);
@@ -189,7 +189,7 @@ class UpgradeController {
             if (android.os.Build.VERSION.SDK_INT >= 11) {
                 pd.setProgressNumberFormat("%1dM/%2dM");
             }
-            // è·å–åˆ°æ–‡ä»¶çš„å¤§å°
+            // »ñÈ¡µ½ÎÄ¼şµÄ´óĞ¡
             pd.setMax(conn.getContentLength() / (1024 * 1024));
             InputStream is = conn.getInputStream();
             File file = new File(Environment.getExternalStorageDirectory(),
@@ -225,14 +225,14 @@ class UpgradeController {
      * @throws Exception
      */
     private File getFileFromServer(String path) throws Exception {
-        // å¦‚æœç›¸ç­‰çš„è¯è¡¨ç¤ºå½“å‰çš„sdcardæŒ‚è½½åœ¨æ‰‹æœºä¸Šå¹¶ä¸”æ˜¯å¯ç”¨çš„
+        // Èç¹ûÏàµÈµÄ»°±íÊ¾µ±Ç°µÄsdcard¹ÒÔØÔÚÊÖ»úÉÏ²¢ÇÒÊÇ¿ÉÓÃµÄ
         if (Environment.getExternalStorageState().equals(
                 Environment.MEDIA_MOUNTED)) {
             URL url = new URL(path);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setConnectTimeout(5000);
 
-            // è·å–åˆ°æ–‡ä»¶çš„å¤§å°
+            // »ñÈ¡µ½ÎÄ¼şµÄ´óĞ¡
             max = conn.getContentLength();
             InputStream is = conn.getInputStream();
             File file = new File(Environment.getExternalStorageDirectory(),
@@ -267,17 +267,17 @@ class UpgradeController {
      */
     private void installApk(Context context, File file) {
         Intent intent = new Intent();
-        // æ‰§è¡ŒåŠ¨ä½œ
+        // Ö´ĞĞ¶¯×÷
         intent.setAction(Intent.ACTION_VIEW);
-        // å¢åŠ TAG
+        // Ôö¼ÓTAG
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-         //7.0ä»¥ä¸Šèµ°ä¸åŒçš„æ–¹æ³•
+         //7.0ÒÔÉÏ×ß²»Í¬µÄ·½·¨
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             Uri apkUri = FileProvider.getUriForFile(context,
                     context.getApplicationContext().getPackageName()+".fileprovider", file);
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             intent.setDataAndType(apkUri, "application/vnd.android.package-archive");
-            //å…¼å®¹8.0
+            //¼æÈİ8.0
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 boolean hasInstallPermission = context.getPackageManager().canRequestPackageInstalls();
                 if (!hasInstallPermission) {
@@ -293,11 +293,10 @@ class UpgradeController {
     }
 
     /**
-     * è·³è½¬åˆ°è®¾ç½®-å…è®¸å®‰è£…æœªçŸ¥æ¥æº-é¡µé¢
+     * Ìø×ªµ½ÉèÖÃ-ÔÊĞí°²×°Î´ÖªÀ´Ô´-Ò³Ãæ
      */
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void startInstallPermissionSettingActivity(Context context) {
-        //æ³¨æ„è¿™ä¸ªæ˜¯8.0æ–°API
         Intent intent = new Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
