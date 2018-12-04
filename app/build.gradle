@@ -7,7 +7,7 @@ android {
     defaultConfig {
         applicationId "com.yqshi.upgrade"
         minSdkVersion 14
-        targetSdkVersion 25
+        targetSdkVersion 26
         versionCode 1
         versionName "1.0"
     }
@@ -22,7 +22,7 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     testImplementation 'junit:junit:4.12'
-   // implementation project(':AndroidUpdate')
-    implementation 'com.yqshi.sdk.upgrade:AndroidUpdate:1.0.3'
+    implementation project(':AndroidUpdate')
+    //implementation 'com.yqshi.sdk.upgrade:AndroidUpdate:1.0.3'
     implementation 'com.android.support:appcompat-v7:27.1.0'
 }

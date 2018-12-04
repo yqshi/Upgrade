@@ -1,10 +1,13 @@
 package com.yqshi.sdk.upgrade;
 
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.os.Build;
 import android.widget.RemoteViews;
 
 class UpgradeNotificationHelper {
@@ -41,8 +44,28 @@ class UpgradeNotificationHelper {
         UPDATE = appName + context.getString(R.string.ck_update);
 
         nMgr = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        notification = new Notification(ResourceUtil.getMipmapId(context, "ic_launcher"),
-                context.getString(R.string.ck_updated), System.currentTimeMillis());
+
+        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.O){
+            //创建 通知通道  channelid和channelname是必须的（自己命名就好）
+            NotificationChannel channel = new NotificationChannel("yqshi_upgrade",
+                    "yqshi_upgrade_channel", NotificationManager.IMPORTANCE_DEFAULT);
+            channel.enableLights(true);//是否在桌面icon右上角展示小红点
+            channel.setLightColor(Color.RED);//小红点颜色
+            channel.setShowBadge(true); //是否在久按桌面图标时显示此渠道的通知
+            nMgr.createNotificationChannel(channel);
+
+            int notificationId = 0x1234;
+            Notification.Builder builder = new Notification.Builder(context,"yqshi_upgrade");
+
+            //设置通知显示图标、文字等
+            builder.setSmallIcon(ResourceUtil.getMipmapId(context, "ic_launcher"))
+                    .setContentText(context.getString(R.string.ck_updated))
+                    .setAutoCancel(true);
+            notification=builder.build();
+        }else {
+            notification = new Notification(ResourceUtil.getMipmapId(context, "ic_launcher"),
+                    context.getString(R.string.ck_updated), System.currentTimeMillis());
+        }
 
         RemoteViews contentView = new RemoteViews(context.getPackageName(), R.layout.ck_update_progressdialog);
         contentView.setImageViewResource(R.id.icon,
@@ -102,8 +125,18 @@ class UpgradeNotificationHelper {
             if (notification != null)
                 nMgr.notify(NOTIFY_ID, notification);
         } else {
-            nMgr.cancel(NOTIFY_ID);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                //关闭通知通道
+                nMgr.deleteNotificationChannel("yqshi_upgrade");
+            }else {
+                nMgr.cancel(NOTIFY_ID);
+            }
+
         }
     }
+
+
+
+
 
 }

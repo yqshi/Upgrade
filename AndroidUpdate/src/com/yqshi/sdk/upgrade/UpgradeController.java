@@ -1,7 +1,6 @@
 package com.yqshi.sdk.upgrade;
 
 import android.annotation.SuppressLint;
-import android.app.ActivityManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -10,6 +9,8 @@ import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.Settings;
+import android.support.annotation.RequiresApi;
 import android.support.v4.content.FileProvider;
 
 import java.io.BufferedInputStream;
@@ -19,7 +20,6 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.List;
 
 class UpgradeController {
     private static UpgradeController upgradeController;
@@ -249,8 +249,8 @@ class UpgradeController {
                 fos.write(buffer, 0, len);
                 total += len;
                 currentProcress = (total * 100) / max;
-
             }
+
             fos.close();
             bis.close();
             is.close();
@@ -277,10 +277,29 @@ class UpgradeController {
                     context.getApplicationContext().getPackageName()+".fileprovider", file);
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             intent.setDataAndType(apkUri, "application/vnd.android.package-archive");
+            //兼容8.0
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                boolean hasInstallPermission = context.getPackageManager().canRequestPackageInstalls();
+                if (!hasInstallPermission) {
+                    startInstallPermissionSettingActivity(context);
+                    return;
+                }
+            }
+
         } else {
             intent.setDataAndType(Uri.fromFile(file), "application/vnd.android.package-archive");
         }
         context.startActivity(intent);
     }
 
+    /**
+     * 跳转到设置-允许安装未知来源-页面
+     */
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void startInstallPermissionSettingActivity(Context context) {
+        //注意这个是8.0新API
+        Intent intent = new Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
+    }
 }
