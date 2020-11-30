@@ -86,12 +86,12 @@ class UpgradeController {
         pd.setCancelable(false);
         // 当下载安装时，触碰其他地方不会消失下载条
         pd.setCanceledOnTouchOutside(false);
-        pd.setButton(context.getString(R.string.ck_update_install), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                installApk(context);
-            }
-        });
+//        pd.setButton(context.getString(R.string.ck_update_install), new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                installApk(context);
+//            }
+//        });
         pd.show();
         new Thread() {
             @Override
