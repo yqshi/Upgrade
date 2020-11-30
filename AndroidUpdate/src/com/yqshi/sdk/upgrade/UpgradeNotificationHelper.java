@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
+import android.support.v4.app.NotificationCompat;
 import android.widget.RemoteViews;
 
 class UpgradeNotificationHelper {
@@ -45,24 +46,25 @@ class UpgradeNotificationHelper {
 
         nMgr = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.O){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             //创建 通知通道  channelid和channelname是必须的（自己命名就好）
             NotificationChannel channel = new NotificationChannel("yqshi_upgrade",
                     "yqshi_upgrade_channel", NotificationManager.IMPORTANCE_DEFAULT);
             channel.enableLights(true);//是否在桌面icon右上角展示小红点
             channel.setLightColor(Color.RED);//小红点颜色
             channel.setShowBadge(true); //是否在久按桌面图标时显示此渠道的通知
+            channel.setSound(null, null);
             nMgr.createNotificationChannel(channel);
 
-            int notificationId = 0x1234;
-            Notification.Builder builder = new Notification.Builder(context,"yqshi_upgrade");
+            int notificationId = 0x1233;
+            Notification.Builder builder = new Notification.Builder(context, "yqshi_upgrade");
 
             //设置通知显示图标、文字等
             builder.setSmallIcon(ResourceUtil.getMipmapId(context, "ic_launcher"))
                     .setContentText(context.getString(R.string.ck_updated))
                     .setAutoCancel(true);
-            notification=builder.build();
-        }else {
+            notification = builder.build();
+        } else {
             notification = new Notification(ResourceUtil.getMipmapId(context, "ic_launcher"),
                     context.getString(R.string.ck_updated), System.currentTimeMillis());
         }
@@ -128,15 +130,12 @@ class UpgradeNotificationHelper {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 //关闭通知通道
                 nMgr.deleteNotificationChannel("yqshi_upgrade");
-            }else {
+            } else {
                 nMgr.cancel(NOTIFY_ID);
             }
 
         }
     }
-
-
-
 
 
 }

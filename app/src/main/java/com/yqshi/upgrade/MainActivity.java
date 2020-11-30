@@ -74,10 +74,10 @@ public class MainActivity extends AppCompatActivity implements UpgradeViewInterf
                 //设置提示描述信息
                 message.setDesc("新版本更新");
                 //设置是否强制升级 1：强制 0：非强制
-                message.setForce("0");
-                //message.setForce("0");
+                // message.setForce("1");
+                message.setForce("1");
                 //设置下载的URL
-                message.setDownloadUrl("https://zs-api.51lick.com:8080/Public/upfile/app/apk_xs/last/app-deploy-release.apk");
+                message.setDownloadUrl("https://dev-xsimages.51lick.cn/ware/files/apk/file/20200721/1595323690657820.apk");
                 ckNew(message);
                 break;
             case 0:
@@ -107,6 +107,15 @@ public class MainActivity extends AppCompatActivity implements UpgradeViewInterf
         Toast.makeText(this, "检查更新失败", Toast.LENGTH_SHORT).show();
     }
 
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.e("22", "pppppppp" + resultCode + "-------" + requestCode);
+        if (resultCode == RESULT_OK && requestCode == UpgradeSDK.REQUEST_CODE_INSTALL_SETTING_UNKNOW_APP) {
+            UpgradeSDK.getInstance().installApp(MainActivity.this);
+        }
+    }
 
     /**
      * 自己写的调用通知栏

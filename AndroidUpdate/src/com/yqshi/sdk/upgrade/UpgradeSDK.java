@@ -8,6 +8,8 @@ public class UpgradeSDK {
      */
     private static UpgradeSDK upgradeSDK;
 
+    public static int REQUEST_CODE_INSTALL_SETTING_UNKNOW_APP = 162;
+
     private UpgradeSDK() {
 
     }
@@ -23,14 +25,24 @@ public class UpgradeSDK {
     /**
      * update app
      *
-     * @param context      context
+     * @param context        context
      * @param upgradeMessage UpgradeMessage
-     * @param appName      appName
+     * @param appName        appName
      */
     public void updateApp(Context context, UpgradeMessage upgradeMessage,
                           String appName) {
         UpgradeController.getInstance().updateApp(context, upgradeMessage,
                 appName);
+    }
+
+
+    /**
+     * update app
+     *
+     * @param context        context
+     */
+    public void installApp(Context context) {
+        UpgradeController.getInstance().installApk(context);
     }
 
 }

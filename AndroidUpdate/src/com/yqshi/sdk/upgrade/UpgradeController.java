@@ -1,8 +1,11 @@
 package com.yqshi.sdk.upgrade;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -12,6 +15,7 @@ import android.os.Message;
 import android.provider.Settings;
 import android.support.annotation.RequiresApi;
 import android.support.v4.content.FileProvider;
+import android.view.View;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -82,7 +86,12 @@ class UpgradeController {
         pd.setCancelable(false);
         // 当下载安装时，触碰其他地方不会消失下载条
         pd.setCanceledOnTouchOutside(false);
-        //pd.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+        pd.setButton(context.getString(R.string.ck_update_install), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                installApk(context);
+            }
+        });
         pd.show();
         new Thread() {
             @Override
@@ -91,12 +100,9 @@ class UpgradeController {
                     File file = getFileFromServer(downLoadAPPurl, pd);
                     sleep(3000);
                     installApk(context, file);
-                    pd.dismiss();
+                    //pd.dismiss();
                 } catch (Exception e) {
                     e.printStackTrace();
-                    // Message msg = new Message();
-                    // msg.what = DOWN_ERROR;
-                    // handler.sendMessage(msg);
                 }
             }
         }.start();
@@ -194,6 +200,7 @@ class UpgradeController {
             InputStream is = conn.getInputStream();
             File file = new File(Environment.getExternalStorageDirectory(),
                     "updata.apk");
+            //如果文件存在删除
             if (file.exists()) {
                 file.delete();
             }
@@ -260,6 +267,19 @@ class UpgradeController {
         }
     }
 
+
+    /**
+     * install apk
+     */
+    protected void installApk(Context context) {
+        File file = new File(Environment.getExternalStorageDirectory(),
+                "updata.apk");
+        if (file.exists()) {
+            installApk(context, file);
+        }
+
+    }
+
     /**
      * install apk
      *
@@ -271,10 +291,10 @@ class UpgradeController {
         intent.setAction(Intent.ACTION_VIEW);
         // 增加TAG
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-         //7.0以上走不同的方法
+        //7.0以上走不同的方法
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             Uri apkUri = FileProvider.getUriForFile(context,
-                    context.getApplicationContext().getPackageName()+".fileprovider", file);
+                    context.getApplicationContext().getPackageName() + ".fileprovider", file);
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             intent.setDataAndType(apkUri, "application/vnd.android.package-archive");
             //兼容8.0
@@ -297,8 +317,9 @@ class UpgradeController {
      */
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void startInstallPermissionSettingActivity(Context context) {
-        Intent intent = new Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        context.startActivity(intent);
+        Uri packageURI = Uri.parse("package:" + context.getPackageName());
+        Intent intent = new Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES, packageURI);
+        ((Activity) context).startActivityForResult(intent, UpgradeSDK.REQUEST_CODE_INSTALL_SETTING_UNKNOW_APP);
+
     }
 }
